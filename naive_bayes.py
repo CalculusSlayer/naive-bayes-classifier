@@ -154,14 +154,35 @@ class NaiveBayes():
         :param spams: A list of spam email filenames.
         :return: The accuracy of our Naive Bayes model.
         """
+        def change_filename(filepath):
+            # Split the filepath to get the file name with extension
+            base_name = filepath.split('/')[-1]
+            
+            # Split the base name to get the number
+            name, _ = base_name.split('.')
+            
+            # Form the new file name
+            new_filename = f"Email ID={name}"
+            
+            return new_filename
+
         total_correct = 0
         total_datapoints = len(hams) + len(spams)
         for filename in hams:
             if self.predict(filename) == self.HAM_LABEL:
                 total_correct += 1
+                print(f"Predicted {change_filename(filename)} to be NOT SPAM: Correct ✅\n")
+            else:
+                print(f"Predicted {change_filename(filename)} to be NOT SPAM: Wrong ❌\n")
+
+                
         for filename in spams:
             if self.predict(filename) == self.SPAM_LABEL:
                 total_correct += 1
+                print(f"Predicted {change_filename(filename)} to be SPAM: Correct ✅\n")
+            else:
+                print(f"Predicted {change_filename(filename)} to be SPAM: Wrong ❌\n")
+
         return total_correct / total_datapoints
 
 if __name__ == '__main__':
@@ -175,5 +196,8 @@ if __name__ == '__main__':
     nbc.fit(train_hams, train_spams)
 
     # Print out the accuracy on the train and test sets.
-    print("Train Accuracy: {}".format(nbc.accuracy(train_hams, train_spams)))
-    print("Test  Accuracy: {}".format(nbc.accuracy(test_hams, test_spams)))
+    # print("Train Accuracy: {}".format(nbc.accuracy(train_hams, train_spams))) # train accuracy
+    # print("Test Accuracy: {}".format(nbc.accuracy(test_hams, test_spams))) # test accuracy
+    train = nbc.accuracy(train_hams, train_spams)
+    test = nbc.accuracy(test_hams, test_spams)
+    print(f"Accuracy: {train:.2%}")
